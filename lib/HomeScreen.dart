@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:to_do/dialog_box.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -9,178 +8,143 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  bool Personal = true, College = false;
+  bool isPersonal = true;
+  bool suggest = false;
+  TextEditingController todocontroller = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.greenAccent.shade400,
-        onPressed: () {
-          openbox();
-        },
-        child: Icon(
-          Icons.add,
-          size: 40,
-        ),
+        onPressed: _openDialog,
+        child: const Icon(Icons.add, size: 40),
       ),
       body: Container(
-        padding: EdgeInsets.only(left: 30, top: 130),
-        height: MediaQuery.of(context).size.height,
-        width: MediaQuery.of(context).size.width,
-        decoration: BoxDecoration(
-            gradient: LinearGradient(colors: [
-          Colors.grey,
-          Colors.white,
-          Colors.grey,
-        ], begin: Alignment.topLeft, end: Alignment.bottomRight)),
+        padding: const EdgeInsets.only(left: 30, top: 130),
+        width: double.infinity,
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              Color.fromARGB(31, 22, 227, 28),
+              Colors.white,
+              Color.fromARGB(31, 73, 210, 77),
+            ],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
-              child: Text(
-                "Salle,",
-                style: TextStyle(
-                    fontSize: 30,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black),
-              ),
+            const SizedBox(height: 10),
+            const Text(
+              "BHAII..",
+              style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 10),
-            Container(
-              child: Text(
-                "BOO BOO",
-                style: TextStyle(
-                    fontSize: 40,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black),
-              ),
+            const SizedBox(height: 10),
+            const Text(
+              "U can If u think u can..!!",
+              style: TextStyle(fontSize: 19, fontWeight: FontWeight.bold, color: Colors.black54),
             ),
-            SizedBox(height: 10),
-            Container(
-              child: Text(
-                "Jaldi sai Kam kar le Bhai...!!",
-                style: TextStyle(
-                    fontSize: 19,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black54),
-              ),
-            ),
-            SizedBox(height: 50),
+            const SizedBox(height: 50),
+            _buildToggleButtons(),
+            const SizedBox(height: 50),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                Personal
-                    ? Material(
-                        elevation: 5,
-                        borderRadius: BorderRadius.circular(20),
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 20, vertical: 5),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20),
-                            color: Colors.greenAccent,
-                          ),
-                          child: Text(
-                            'Personal',
-                            style: TextStyle(
-                              fontSize: 20,
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                      )
-                    : GestureDetector(
-                        onTap: () {
-                          Personal = true;
-                          College = false;
-                          setState(() {});
-                        },
-                        child: Text(
-                          "Personal",
-                          style: TextStyle(
-                            fontSize: 20,
-                          ),
-                        ),
-                      ),
-                College
-                    ? Material(
-                        elevation: 5,
-                        borderRadius: BorderRadius.circular(20),
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 20, vertical: 5),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20),
-                            color: Colors.greenAccent,
-                          ),
-                          child: Text(
-                            'College',
-                            style: TextStyle(
-                              fontSize: 20,
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                      )
-                    : GestureDetector(
-                        onTap: () {
-                          Personal = false;
-                          College = true;
-                          setState(() {});
-                        },
-                        child: Text(
-                          "College",
-                          style: TextStyle(
-                            fontSize: 20,
-                          ),
-                        ),
-                      )
+                Checkbox(
+                  activeColor: Colors.black,
+                  value: suggest,
+                  onChanged: (newValue) {
+                    setState(() {
+                      suggest = newValue!;
+                    });
+                  },
+                ),
+                const Text("Your text here"),
               ],
-            ),
+            )
           ],
         ),
       ),
     );
   }
-  openbox(){
-  return showDialog(
-    context: context,
-    builder: (context)=>AlertDialog(
-      content: Container(
-        child: Column(
-          children: [Row(
-            children: [
-              GestureDetector(
-                onTap: (){
-                  Navigator.pop(context);
-                },
-                child: Icon(Icons.cancel),
-                 ),
 
-                 SizedBox(height: 60),
+  Widget _buildToggleButtons() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        _buildToggleButton("Personal", isPersonal, () {
+          setState(() => isPersonal = true);
+        }),
+        _buildToggleButton("College", !isPersonal, () {
+          setState(() => isPersonal = false);
+        }),
+        
+      ],
+    );
+  }
 
-                Text("Add ToDo task~",
-                style: TextStyle(
-                  color: Colors.greenAccent.shade400
-                ),)
-                ],
-              ),
-
-               SizedBox(height: 60),
-               Container(
+  Widget _buildToggleButton(String text, bool isActive, VoidCallback onTap) {
+    return GestureDetector(
+      onTap: onTap,
+      child: isActive
+          ? Material(
+              elevation: 5,
+              borderRadius: BorderRadius.circular(20),
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
                 decoration: BoxDecoration(
-                  border: Border.all(),
-                  color: Colors.black,
-
-
+                  borderRadius: BorderRadius.circular(20),
+                  color: Colors.greenAccent,
                 ),
-                child: TextField(),
-              )
+                child: Text(
+                  text,
+                  style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+              ),
+            )
+          : Text(text, style: const TextStyle(fontSize: 20)),
+    );
+  }
+
+   _openDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text(
+                  "Add To-Do task~",
+                  style: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.cancel),
+                  onPressed: () => Navigator.pop(context),
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
+            TextField(
+              controller: todocontroller,
+              decoration: InputDecoration(
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                hintText: "Enter the Task",
+              ),
+            ),
+            Container(
+              child: Text("add",
+             style:TextStyle(
+              color: Colors.black,
+             )),
+            )
           ],
         ),
       ),
-    ));
-}
+    );
+  }
 }
